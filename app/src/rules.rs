@@ -158,7 +158,7 @@ impl RulesEngine {
 
             self.last_fired.insert(key, d.occured_at);
 
-            fired.push(IncidenrCandidate{
+            fired.push(IncidentCandidate{
                 site_id: d.site_id,
                 worker_id: d.worker_id,
                 rule_triggered: d.rule_type,
