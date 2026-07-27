@@ -198,9 +198,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         })?;
 
     // Initialize vision engine with mock or real ONNX model
+    let empty_path = String::new();
     let vision_engine = Arc::new(VisionEngine::new(
         if config.mock_vision {
-            &String::new()
+            &empty_path
         } else {
             config.onnx_model_path.to_str().unwrap_or("")
         }
