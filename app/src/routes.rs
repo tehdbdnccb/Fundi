@@ -63,53 +63,6 @@ pub fn router(state: AppState) -> Router {
         .layer(cors)
         .with_state(state)
 }
-// routes.rs — ingest_frame's response now includes raw per-frame
-// detections for overlay purposes, separate from incidents_created.
-// This is intentional: the overlay should show a box the instant a
-// violation is visually detected, even on frames where the debounce
-// window suppresses a new persisted incident — the worker should see
-// immediate visual feedback, while the incident log stays deduplicated.
-
-#[derive(Serialize)]
-struct OverlayBox {
-    rule: String,
-    confidence_bp: u16,
-    x1: f32,
-    y1: f32,
-    x2: f32,
-    y2: f32,
-}
-
-#[derive(Serialize)]
-struct IngestFrameResponse {
-    incidents_created: Vec<Uuid>,
-    overlay_boxes: Vec<OverlayBox>,
-}
-
-// Inside ingest_frame, after computing `raw_detections` and before the
-// rules-engine mutex block, build the overlay list independently:
-let overlay_boxes: Vec<OverlayBox> = raw_detections
-    .iter()
-    .filter_map(|raw| {
-        vision::to_rule_confidence_bp(raw).map(|(rule_type, confidence_bp)| OverlayBox {
-            rule: rule_type.as_db_str().to_string(),
-            confidence_bp,
-            x1: raw.bbox_original_xyxy[0],
-            y1: raw.bbox_original_xyxy[1],
-            x2: raw.bbox_original_xyxy[2],
-            y2: raw.bbox_original_xyxy[3],
-        })
-    })
-    .collect();
-
-// ...existing candidate/insert logic unchanged...
-
-Json(IngestFrameResponse {
-    incidents_created: created_ids,
-    overlay_boxes,
-})
-.into_response()
-
 // ============================================================
 // Shared error → HTTP mapping
 // ============================================================
