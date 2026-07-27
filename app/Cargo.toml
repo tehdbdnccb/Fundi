@@ -5,7 +5,7 @@ edition = "2021"
 
 [[bin]]
 name = "fundi"
-path = "app/src/main.rs"
+path = "src/main.rs"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
