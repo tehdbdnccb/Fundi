@@ -13,7 +13,8 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
+use base64::engine::general_purpose;
+use base64::Engine;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -122,7 +123,7 @@ async fn ingest_frame(
     State(state): State<AppState>,
     Json(req): Json<IngestFrameRequest>,
 ) -> axum::response::Response {
-    let image_bytes = match BASE64.decode(&req.frame_base64) {
+    let image_bytes = match general_purpose::STANDARD.decode(&req.frame_base64) {
         Ok(bytes) => bytes,
         Err(e) => return error_response(StatusCode::BAD_REQUEST, "invalid_base64_frame", e),
     };
