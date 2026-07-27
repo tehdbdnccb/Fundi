@@ -197,12 +197,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             e
         })?;
 
-    let vision_engine = Arc::new(
-        VisionEngine::load(&config.onnx_model_path, config.mock_vision).map_err(|e| {
-            eprintln!("FATAL: vision engine failed to load — {e}");
-            e
-        })?,
-    );
+    // Initialize vision engine with mock or real ONNX model
+    let vision_engine = Arc::new(VisionEngine::new(
+        if config.mock_vision {
+            &String::new()
+        } else {
+            config.onnx_model_path.to_str().unwrap_or("")
+        }
+    ).map_err(|e| {
+        eprintln!("FATAL: vision engine failed to load — {e}");
+        e
+    })?);
 
     let rules_engine = Arc::new(Mutex::new(RulesEngine::new(RulesEngineConfig::default())));
 
@@ -249,7 +254,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config.server_port)).await?;
 
     println!("Fundi backend listening on port {}", config.server_port);
-    axum::serve(listener, app).await?;
+
+    // Use hyper::Server for axum 0.6 compatibility (axum 0.7+ has axum::serve)
+    hyper::Server::from_tcp(listener.into_std()?)?
+        .serve(app.into_make_service_with_connect_info::<std::net::SocketAddr>())
+        .await?;
 
     Ok(())
 }
@@ -297,3 +306,4 @@ async fn mock_minter_loop(pool: sqlx::PgPool, interval_secs: u64) {
         }
     }
 }
+
