@@ -198,13 +198,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         })?;
 
     // Initialize vision engine with mock or real ONNX model
-    let vision_engine = Arc::new(VisionEngine::new(
-        if config.mock_vision {
-            &String::new()
-        } else {
-            config.onnx_model_path.to_str().unwrap_or("")
-        }
-    ).map_err(|e| {
+    let model_path_str = if config.mock_vision {
+        String::new()
+    } else {
+        config.onnx_model_path.to_str().unwrap_or("").to_string()
+    };
+    let vision_engine = Arc::new(VisionEngine::new(&model_path_str).map_err(|e| {
         eprintln!("FATAL: vision engine failed to load — {e}");
         e
     })?);

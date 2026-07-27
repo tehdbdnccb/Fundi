@@ -20,7 +20,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use uuid::Uuid;
 
-use crate::db::{self, AttestationStatus, DbError, IncidentRow};
+use crate::db::{self, DbError, IncidentRow};
 use crate::rules::RuleType;
 
 #[derive(Debug)]

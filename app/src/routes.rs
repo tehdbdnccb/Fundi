@@ -13,8 +13,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use base64::engine::general_purpose;
-use base64::Engine;
+use base64::engine::{general_purpose, Engine};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
