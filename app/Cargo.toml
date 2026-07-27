@@ -2,24 +2,24 @@
 name = "fundi"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.84.0"
+rust-version = "1.80"
 
 [[bin]]
 name = "fundi"
 path = "src/main.rs"
 
 [dependencies]
-tokio = { version = "1.40", features = ["full"] }
-axum = "0.7"
-sqlx = { version = "0.7.3", features = ["postgres", "runtime-tokio-rustls", "uuid", "chrono", "macros"] }
+tokio = { version = "1.35", features = ["full"] }
+axum = "0.6"
+sqlx = { version = "0.6.3", features = ["postgres", "runtime-tokio-rustls", "uuid", "chrono", "macros"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-chrono = { version = "0.4.35", features = ["serde"] }
-uuid = { version = "1.6", features = ["serde", "v4"] }
-ethers = "2.0.11"
+chrono = { version = "0.4.30", features = ["serde"] }
+uuid = { version = "1.5", features = ["serde", "v4"] }
+ethers = "2.0.8"
 base64 = "0.21"
 tower = "0.4"
-tower-http = { version = "0.5", features = ["cors"] }
+tower-http = { version = "0.4", features = ["cors"] }
 
 [profile.release]
 opt-level = 3
