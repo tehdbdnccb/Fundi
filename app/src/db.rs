@@ -305,13 +305,6 @@ pub async fn insert_dispute(
     row.try_get("id").map_err(|e| DbError::QueryFailed(e.to_string()))
 }
 
-// routes.rs's raise_dispute now calls this instead of inline SQL:
-    let result = db::insert_dispute(&state.pool, incident_id, req.raised_by_user_id, &req.reason).await;
-    match result {
-        Ok(dispute_id) => (StatusCode::CREATED, Json(DisputeCreatedResponse { dispute_id })).into_response(),
-        Err(e) => error_response(StatusCode::INTERNAL_SERVER_ERROR, "raise_dispute_failed", e),
-    }
-
 /// Lists incidents for a site's dashboard view, most recent first, paginated.
 /// `before` supports keyset pagination (not OFFSET) — deliberate, since
 /// OFFSET pagination degrades linearly with table size and this table is

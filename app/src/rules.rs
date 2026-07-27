@@ -7,9 +7,9 @@
 // guessing" about, and the answer needs to be "it's testable arithmetic,
 // here are the unit tests".
 
-use chrono::{DateTime, Duration as ChronoDuration. Utc};
+use chrono::{DateTime, Duration as ChronoDuration, Utc};
 use std::collections::HashMap;
-use uuid:Uuid;
+use uuid::Uuid;
 
 // Mirrors the Postgres CHECK constraint 'rule_triggered IN ('ppe_missing', 'zone_breach')
 // Kept as an enum here, not a string, so a typo can never silently create a 
@@ -124,7 +124,7 @@ impl RulesEngine {
     /// an incident updates internal debounce state - this is the one place 
     /// in the pure-logic layer with any mutation at all, and it's confined 
     /// to an in-memory map, not I/0
-    pu fn evaluate(
+    pub fn evaluate(
         &mut self,
         detections: &[Detection],
     ) -> Result<Vec<IncidentCandidate>, RuleEngineError> {
@@ -280,7 +280,7 @@ mod tests {
         .evaluate(&[detection(site, None, RuleType::ZoneBreach, 9000, t0)])
         .unwrap();
         let second = engine 
-        .evaluate(&[detection(site, None, RuleType::ZoneBreach, 9000 t1)])
+        .evaluate(&[detection(site, None, RuleType::ZoneBreach, 9000, t1)])
         .unwrap();
 
         assert_eq!(first.len(), 1);

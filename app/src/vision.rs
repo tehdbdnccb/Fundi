@@ -111,8 +111,8 @@ mod tests {
 
     #[test]
     fn iou_identical_boxes_is_one() {
-        let box = [0.0, 0.0, 10.0, 10.0];
-        assert_eq!(iou(&box, &box), 1.0);
+        let box1 = [0.0, 0.0, 10.0, 10.0];
+        assert_eq!(iou(&box1, &box1), 1.0);
     }
 
     #[test]

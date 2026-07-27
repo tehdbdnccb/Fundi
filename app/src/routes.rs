@@ -20,7 +20,7 @@ use sqlx::PgPool;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
-use tower_http::cors::{Any, CorsLayer}
+use tower_http::cors::{Any, CorsLayer};
 
 use crate::db::{self, AttestationStatus, IncidentRow};
 use crate::rules::{Detection, RuleEngineError, RulesEngine};
@@ -39,7 +39,7 @@ pub struct AppState {
     pub rules: Arc<Mutex<RulesEngine>>,
 }
 
-/ router() function, updated:
+// router() function, updated:
 pub fn router(state: AppState) -> Router {
     // Scoped deliberately permissive for hackathon demo purposes — Any
     // origin, Any method, Any header. This is a stated, documented scope
