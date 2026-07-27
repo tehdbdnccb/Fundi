@@ -82,20 +82,11 @@ impl From<RuleType> for ContractAttestationType {
     }
 }
 
+// Struct definition updated to match — pool field removed entirely:
 pub struct AttestationMinter {
     contract: Contract<SignerMiddleware<Provider<Http>, LocalWallet>>,
-    pool: PgPool,
-    /// Hardcoded, not caller-configurable — see db.rs's self-critique about
-    /// trusting the one legitimate caller instead of adding unused defensive
-    /// configuration surface.
     batch_size: i64,
 }
-
-const MINTER_BATCH_SIZE: i64 = 10;
-// Corrected constructor — AttestationMinter no longer owns a PgPool.
-// The pool is a shared resource (also used by db.rs callers, routes.rs,
-// and the risk-scoring job) and belongs in main.rs's app state, injected
-// into every call site that needs it. Owning a second copy here was wrong.
 
 impl AttestationMinter {
     pub async fn new(
@@ -138,13 +129,6 @@ impl AttestationMinter {
             batch_size: MINTER_BATCH_SIZE,
         })
     }
-}
-
-// Struct definition updated to match — pool field removed entirely:
-pub struct AttestationMinter {
-    contract: Contract<SignerMiddleware<Provider<Http>, LocalWallet>>,
-    batch_size: i64,
-}
 
     /// Runs one poll-and-mint cycle: fetch up to `batch_size` pending
     /// incidents, attempt to mint each, update DB accordingly. Returns the
@@ -303,6 +287,8 @@ fn keccak256_site_id(site_id: Uuid) -> [u8; 32] {
     output
 }
 
+const MINTER_BATCH_SIZE: i64 = 10;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -326,3 +312,4 @@ mod tests {
         assert_eq!(ContractAttestationType::from(RuleType::ZoneBreach) as u8, 1);
     }
 }
+
