@@ -14,7 +14,7 @@ use ethers::{
     signers::{LocalWallet, Signer},
     types::{Address, U256},
 };
-use sqlx::PgPool;
+use sqlx::{PgPool, Row};
 use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
