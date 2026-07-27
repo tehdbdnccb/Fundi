@@ -45,7 +45,7 @@ pub struct Detection {
     /// Basis points, 0-10000, matching the Postgres 'confidence_bp' column exactly 
     /// Deliberately not a float - see confidence_bp invariant note in schema.sql.
     pub confidence_bp: u16,
-    pub occured_at: DateTime<Utc>,
+    pub occurred_at: DateTime<Utc>,
 }
 
 /// Validation error for a malformed detection. The engine refuses to silently 
@@ -149,21 +149,21 @@ impl RulesEngine {
 
             let should_fire = match self.last_fired.get(&key) {
                 None => true,
-                Some(last) => d.occured_at.signed_duration_since(*last) >= self.config.debounce_window,
+                Some(last) => d.occurred_at.signed_duration_since(*last) >= self.config.debounce_window,
             };
 
             if !should_fire {
                 continue;
             }
 
-            self.last_fired.insert(key, d.occured_at);
+            self.last_fired.insert(key, d.occurred_at);
 
             fired.push(IncidentCandidate{
                 site_id: d.site_id,
                 worker_id: d.worker_id,
                 rule_triggered: d.rule_type,
                 confidence_bp: d.confidence_bp,
-                detected_at: d.occured_at,
+                detected_at: d.occurred_at,
             });
         }
         Ok(fired)
@@ -184,14 +184,14 @@ mod tests {
         worker: Option<Uuid>,
         rule: RuleType,
         confidence_bp: u16,
-        occured_at: DateTime<Utc>,
+        occurred_at: DateTime<Utc>,
     ) -> Detection {
         Detection {
             site_id: site,
             worker_id: worker,
             rule_type: rule,
             confidence_bp,
-            ocurred_at,
+            occurred_at,
 
         }
     }
